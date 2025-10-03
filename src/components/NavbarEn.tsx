@@ -12,6 +12,7 @@ const Navbar: React.FC = () => {
   const SCROLL_THRESHOLD = 1600;
   const NAVBAR_HEIGHT = 120;
 
+  // Smooth scroll
   const scrollToSection = (id: string) => {
     const startY = window.scrollY;
 
@@ -93,19 +94,19 @@ const Navbar: React.FC = () => {
         isHidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
-      <div className="w-full flex items-center p-6 bg-black text-white">
+      <div className="w-full flex flex-col md:flex-row items-center justify-between p-4 md:p-6 bg-black text-white">
         {/* Left side: Search + Language */}
-        <div className="font-montserrat flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4 mb-2 md:mb-0">
           {/* Search */}
           <div ref={searchRef} className="relative">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="font-montserrat px-3 py-1 hover:bg-gray-800 transition"
+              className="px-3 py-1 hover:bg-gray-800 transition"
             >
               Search
             </button>
             {searchOpen && (
-              <div className="absolute top-10 left-0 w-80 bg-black border-gray-700 shadow-lg rounded-md p-4 z-50 text-white">
+              <div className="absolute top-10 left-0 w-72 md:w-80 bg-black border border-gray-700 shadow-lg rounded-md p-4 z-50 text-white">
                 <button
                   onClick={() => setSearchOpen(false)}
                   className="absolute top-2 right-2 text-white"
@@ -140,7 +141,7 @@ const Navbar: React.FC = () => {
           <div ref={langRef} className="relative">
             <button
               onClick={() => setLangOpen(!langOpen)}
-              className="px-3 py-1 rounded-md hover:bg-black-800 transition flex items-center"
+              className="px-3 py-1 rounded-md hover:bg-gray-800 transition flex items-center"
             >
               English <span className="ml-1">▾</span>
             </button>
@@ -165,39 +166,39 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Center Menu */}
-        <nav className="flex-1 flex justify-center">
-          <ul className="flex space-x-8 text-[20px] font-medium font-montserrat">
+        <nav className="w-full md:flex-1 md:flex md:justify-center">
+          <ul className="flex flex-col md:flex-row md:space-x-8 text-base md:text-[20px] font-medium font-montserrat items-center">
             <li>
-              <button onClick={() => scrollToSection("#home")} className="hover:text-blue-400 transition">
+              <button onClick={() => scrollToSection("#home")} className="hover:text-blue-400 transition py-2">
                 HOME
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection("#gallery")} className="hover:text-blue-400 transition">
+              <button onClick={() => scrollToSection("#gallery")} className="hover:text-blue-400 transition py-2">
                 GALLERY
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection("#criacoes")} className="hover:text-blue-400 transition">
+              <button onClick={() => scrollToSection("#criacoes")} className="hover:text-blue-400 transition py-2">
                 CREATIONS
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection("#aboutEn")} className="hover:text-blue-400 transition">
+              <button onClick={() => scrollToSection("#aboutEn")} className="hover:text-blue-400 transition py-2">
                 ABOUT
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection("#contato")} className="hover:text-blue-400 transition">
+              <button onClick={() => scrollToSection("#contato")} className="hover:text-blue-400 transition py-2">
                 CONTACT
               </button>
             </li>
           </ul>
         </nav>
 
-        {/* Logo right */}
-        <div className="flex-shrink-0">
-          <img src="/logo1.png" alt="ACFR Logo" className="h-20 w-auto" />
+        {/* Logo */}
+        <div className="flex-shrink-0 mt-2 md:mt-0">
+          <img src="/logo1.png" alt="ACFR Logo" className="h-12 md:h-20 w-auto" />
         </div>
       </div>
     </header>

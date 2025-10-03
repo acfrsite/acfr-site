@@ -9,17 +9,40 @@ const Navbar: React.FC = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);
 
-  // Limite após o qual a navbar desaparece
-  const SCROLL_THRESHOLD = 1600; // ajustar conforme altura da página
-  const NAVBAR_HEIGHT = 120; // altura da navbar, ajuste conforme seu layout
+  const SCROLL_THRESHOLD = 1600;
+  const NAVBAR_HEIGHT = 120;
 
-// Smooth scroll com easing
-// Smooth scroll com easing
-const scrollToSection = (id: string) => {
-  const startY = window.scrollY;
+  // Função de scroll suave
+  const scrollToSection = (id: string) => {
+    const startY = window.scrollY;
 
-  // Se for home, rola para o topo
-  if (id === "#home") {
+    if (id === "#home") {
+      const duration = 800;
+      let startTime: number | null = null;
+
+      const easeInOutQuad = (t: number) =>
+        t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+      const step = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const easedProgress = easeInOutQuad(progress);
+
+        window.scrollTo(0, startY - startY * easedProgress);
+
+        if (progress < 1) requestAnimationFrame(step);
+      };
+
+      requestAnimationFrame(step);
+      return;
+    }
+
+    const target = document.querySelector(id);
+    if (!target) return;
+
+    const targetY =
+      target.getBoundingClientRect().top + window.scrollY - NAVBAR_HEIGHT;
+
     const duration = 800;
     let startTime: number | null = null;
 
@@ -31,47 +54,13 @@ const scrollToSection = (id: string) => {
       const progress = Math.min((timestamp - startTime) / duration, 1);
       const easedProgress = easeInOutQuad(progress);
 
-      window.scrollTo(0, startY - startY * easedProgress);
+      window.scrollTo(0, startY + (targetY - startY) * easedProgress);
 
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
+      if (progress < 1) requestAnimationFrame(step);
     };
 
     requestAnimationFrame(step);
-    return;
-  }
-
-  // Para outras seções
-  const target = document.querySelector(id);
-  if (!target) return;
-
-  const NAVBAR_HEIGHT = 120;
-  const targetY =
-    target.getBoundingClientRect().top + window.scrollY - NAVBAR_HEIGHT;
-
-  const duration = 800;
-  let startTime: number | null = null;
-
-  const easeInOutQuad = (t: number) =>
-    t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-
-  const step = (timestamp: number) => {
-    if (!startTime) startTime = timestamp;
-    const progress = Math.min((timestamp - startTime) / duration, 1);
-    const easedProgress = easeInOutQuad(progress);
-
-    window.scrollTo(0, startY + (targetY - startY) * easedProgress);
-
-    if (progress < 1) {
-      requestAnimationFrame(step);
-    }
   };
-
-  requestAnimationFrame(step);
-};
-
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -87,14 +76,11 @@ const scrollToSection = (id: string) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // Se passou do limite e rolando para baixo, esconde
       if (currentScrollY > SCROLL_THRESHOLD && currentScrollY > lastScrollY) {
         setIsHidden(true);
       } else {
         setIsHidden(false);
       }
-
       setLastScrollY(currentScrollY);
     };
 
@@ -108,19 +94,19 @@ const scrollToSection = (id: string) => {
         isHidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
-      <div className="w-full flex items-center p-6 bg-black text-white">
-        {/* Lado esquerdo: Search + Idioma */}
-        <div className="font-montserrat flex items-center space-x-4">
+      <div className="w-full flex flex-col md:flex-row items-center justify-between p-4 md:p-6 bg-black text-white">
+        {/* Esquerda: Search + Idioma */}
+        <div className="flex items-center space-x-2 md:space-x-4 mb-2 md:mb-0">
           {/* Search */}
           <div ref={searchRef} className="relative">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="font-montserrat px-3 py-1 hover:bg-gray-800 transition"
+              className="px-3 py-1 hover:bg-gray-800 transition"
             >
               Search
             </button>
             {searchOpen && (
-              <div className="absolute top-10 left-0 w-80 bg-black border-gray-700 shadow-lg rounded-md p-4 z-50 text-white">
+              <div className="absolute top-10 left-0 w-72 md:w-80 bg-black border border-gray-700 shadow-lg rounded-md p-4 z-50 text-white">
                 <button
                   onClick={() => setSearchOpen(false)}
                   className="absolute top-2 right-2 text-white"
@@ -155,7 +141,7 @@ const scrollToSection = (id: string) => {
           <div ref={langRef} className="relative">
             <button
               onClick={() => setLangOpen(!langOpen)}
-              className="px-3 py-1 rounded-md hover:bg-black-800 transition flex items-center"
+              className="px-3 py-1 rounded-md hover:bg-gray-800 transition flex items-center"
             >
               Português <span className="ml-1">▾</span>
             </button>
@@ -165,7 +151,7 @@ const scrollToSection = (id: string) => {
                 <ul className="space-y-1">
                   <li>
                     <a
-                      href="\"
+                      href="/"
                       className="block px-2 py-1 hover:bg-gray-800 rounded"
                     >
                       Português
@@ -173,7 +159,7 @@ const scrollToSection = (id: string) => {
                   </li>
                   <li>
                     <a
-                      href="en\"
+                      href="/en"
                       className="block px-2 py-1 hover:bg-gray-800 rounded"
                     >
                       English
@@ -186,12 +172,12 @@ const scrollToSection = (id: string) => {
         </div>
 
         {/* Menu central */}
-        <nav className="flex-1 flex justify-center">
-          <ul className="flex space-x-8 text-[20px] font-medium font-montserrat">
+        <nav className="w-full md:flex-1 md:flex md:justify-center">
+          <ul className="flex flex-col md:flex-row md:space-x-8 text-base md:text-[20px] font-medium font-montserrat items-center">
             <li>
               <button
                 onClick={() => scrollToSection("#home")}
-                className="hover:text-blue-400 transition"
+                className="hover:text-blue-400 transition py-2"
               >
                 HOME
               </button>
@@ -199,7 +185,7 @@ const scrollToSection = (id: string) => {
             <li>
               <button
                 onClick={() => scrollToSection("#gallery")}
-                className="hover:text-blue-400 transition"
+                className="hover:text-blue-400 transition py-2"
               >
                 GALERIA
               </button>
@@ -207,7 +193,7 @@ const scrollToSection = (id: string) => {
             <li>
               <button
                 onClick={() => scrollToSection("#criacoes")}
-                className="hover:text-blue-400 transition"
+                className="hover:text-blue-400 transition py-2"
               >
                 CRIAÇÕES
               </button>
@@ -215,7 +201,7 @@ const scrollToSection = (id: string) => {
             <li>
               <button
                 onClick={() => scrollToSection("#sobre")}
-                className="hover:text-blue-400 transition"
+                className="hover:text-blue-400 transition py-2"
               >
                 SOBRE
               </button>
@@ -223,7 +209,7 @@ const scrollToSection = (id: string) => {
             <li>
               <button
                 onClick={() => scrollToSection("#contato")}
-                className="hover:text-blue-400 transition"
+                className="hover:text-blue-400 transition py-2"
               >
                 CONTATO
               </button>
@@ -231,9 +217,9 @@ const scrollToSection = (id: string) => {
           </ul>
         </nav>
 
-        {/* Logo à direita */}
-        <div className="flex-shrink-0">
-          <img src="/logo1.png" alt="Logo ACFR" className="h-20 w-auto" />
+        {/* Logo */}
+        <div className="flex-shrink-0 mt-2 md:mt-0">
+          <img src="/logo1.png" alt="Logo ACFR" className="h-12 md:h-20 w-auto" />
         </div>
       </div>
     </header>

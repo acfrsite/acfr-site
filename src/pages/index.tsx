@@ -11,8 +11,23 @@ import Contact from "@/components/Contact";
 
 const Home: React.FC = () => {
   const featuredImage = "/quadro4.png";
-  const galleryImages = [{ src: "/quadro1.png" }, { src: "/quadro2.png" }, { src: "/quadro3.png" }, { src: "/quadro5.png" }];
-  const vaseItems = [{ src: "/vaso1.png" }];
+    const galleryImages = [
+    { src: "/quadro1.png" },
+    { src: "/quadro2.png" },
+    { src: "/quadro3.png" },
+    { src: "/quadro5.png" },
+    { src: "/quadro6.png" },
+    { src: "/quadro7.png" },
+    { src: "/quadro8.png" },
+    { src: "/quadro9.png" },
+    { src: "/quadro12.png" },
+  ];
+  const vaseItems = [
+    { src: "/vaso1.png" },
+    { src: "/vaso2.png" },
+    { src: "/vaso3.png" },
+    { src: "/vaso4.png" },
+  ];
 
   return (
     <>
